@@ -7,7 +7,7 @@
 
 ## Setup the Jaeger and Prometheus source
 *DONE:* Expose Grafana to the internet and then setup Prometheus as a data source. Provide a screenshot of the home page after logging into Grafana.
-![alt text](./answer-img/grafana-homepage.png)
+![alt text](./answer-img/data-sources.png)
 
 ## Create a Basic Dashboard
 *DONE:* Create a dashboard in Grafana that shows Prometheus as a source. Take a screenshot and include it here.
@@ -26,11 +26,9 @@ SLIs are the actual measurements of the SLOs. For example, in case of uptime, te
 5. Maximum cpu usage for each service: This metric will help us measure the cpu usage of each service. If a service is using too much cpu, it might result in outage of services.
 
 ## Create a Dashboard to measure our SLIs
-I tried my best to find ways to show a graph for uptime. I have gone through the course content now two times and desprately searched the internet to find how to measure uptime of an applicaiton using Prometheus. It has costed me ~20 hours this week and has severyly affected my job. I am cancelling my subscription. please help me or fail me.
-![alt text](./answer-img/dashboard-1.png)
+![alt text](./answer-img/dashboard-slis.png)
 
 ## Tracing our Flask App
-The screenshot of updated code is here. However it does not show up in Jaeger UI no matter what I try. Below are screenshots of updated code, updated Dockerfile, updated deployment yaml and the logs of the updated deployment. I am trying my best to get it done. Please help.
 ![alt text](./answer-img/updated-python-backend.png)
 ![alt text](./answer-img/updated-backend-docker-file.png)
 ![alt text](./answer-img/updated-backend-deployment-file.png)
@@ -38,8 +36,8 @@ The screenshot of updated code is here. However it does not show up in Jaeger UI
 
 
 ## Jaeger in Dashboards
-Again, I can create a dashboard in Grafana to fetch the traces from Jaeger but somehow the traced from "backend" app are just not there. I am attaching the screenshot of pulling traces for "simplest" app,
 ![alt text](./answer-img/jaeger-dashboard.png)
+![alt text](./answer-img/jaeger-traces.png)
 
 ## Report Error
 
@@ -60,15 +58,44 @@ Dear Developer, we have recently come to notice that some of the backend service
 
 Please let me know if you need more details.
 
+![alt text](./answer-img/developer-report.png)
+
 ## Creating SLIs and SLOs
-1. Up time of the all  backend services measured per month
-2. Memory consumption
-3. CPU usage
-4. Failed requests 5xx responses
+SLO: 99.5% uptime per month
+SLIs:
+1. Memory Consumption
+2. CPU Consumption
+3. Requests per second
+4. Average response time
 
 ## Building KPIs for our plan
-1. CPU Usage: One big reason of service outage is when a service suddenly requires more CPU than available. By monitoring cpu usage, we can spot such instances.
-2. Memory Usage: Similar to above, higher than available memory usage can also cause service outage. Monitoring the memory can help us spot such possible issues.
+1. Memory Consumption: One big reason of service outage is when a service suddenly requires more memory than available. Monitoring the memory can help us spot such possible issues.
+   1. KPIs:
+      1. Max memory consumption of backend service
+      2. Average memory consumption of backend service
+      3. Max memory consumption of frontend service
+      4. Average memory consumption of frontend service
+2. CPU Usage: One big reason of service outage is when a service suddenly requires more CPU than available. By monitoring cpu usage, we can spot such instances.
+   1. KPIs:
+      1. Max CPU consumption of backend service
+      2. Average CPU consumption of backend service
+      3. Max CPU consumption of frontend service
+      4. Average CPU consumption of frontend service
+3. Requests per second: The load on our services in terms of how many requests we are getting per second can indicate if our services can get overloaded and cause a service outage.
+   1. KPIs:
+      1. Average requests per second for frontend service
+      2. Average requests per second for backedn service
+4. Average response time: If requests are taking too long to be responded, that also indicates that our services are overloaded and we will probably see a service downgrade and some of the upcoming requests will timeout. Hence, it is important to keep an eye on this indicator.
+   1. KPIs:
+      1. Average response time for backend services
+      2. Average response time for frontend servies
+
 
 ## Final Dashboard
-![alt text](./answer-img/dashboard-1.png)
+![alt text](./answer-img/dashboard-slis.png)
+Explanation:
+1. 5xx Error Responses: The graph shows number of 5xx i.e. error responses for both backend and frontend services
+2. Requests per second: The graph shows number of requests per second for frontend, backend and trial service.
+3. Average response time: The graph shows the average response time for each of the services.
+4. Uptime: The graph shows the uptime of each container on the cluster.
+5. Memory consumption: The graph shows the memory consumption of each service.

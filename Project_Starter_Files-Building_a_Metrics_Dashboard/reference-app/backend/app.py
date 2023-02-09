@@ -16,37 +16,40 @@ app.config[
 
 mongo = PyMongo(app)
 
+
 def init_tracer(service):
-    logging.getLogger('').handlers = []
-    logging.basicConfig(format='%(message)s', level=logging.DEBUG)
+    logging.getLogger("").handlers = []
+    logging.basicConfig(format="%(message)s", level=logging.DEBUG)
     config = Config(
         config={
-            'sampler': {
-                'type': 'const',
-                'param': 1,
+            "sampler": {
+                "type": "const",
+                "param": 1,
             },
-            'logging': True,
+            "logging": True,
         },
         service_name=service,
     )
     # this call also sets opentracing.tracer
     return config.initialize_tracer()
-tracer = init_tracer('backend-udacity-service')
+
+
+tracer = init_tracer("backend-udacity-service")
 
 
 @app.route("/")
 def homepage():
-    with tracer.start_span('HomePage') as span:
-        span.set_tag('http.method;', 'GET')
-        span.set_tag('endpoint;', '/')
+    with tracer.start_span("HomePage") as span:
+        span.set_tag("http.method;", "GET")
+        span.set_tag("endpoint;", "/")
     return "Hello World"
 
 
 @app.route("/api")
 def my_api():
-    with tracer.start_span('HomePage') as span:
-        span.set_tag('http.method;', 'GET')
-        span.set_tag('endpoint;', '/api')
+    with tracer.start_span("ApiSpan") as span:
+        span.set_tag("http.method;", "GET")
+        span.set_tag("endpoint;", "/api")
     answer = "something"
     return jsonify(repsonse=answer)
 
