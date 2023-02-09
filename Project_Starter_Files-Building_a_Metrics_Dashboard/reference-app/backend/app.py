@@ -1,7 +1,11 @@
 from flask import Flask, render_template, request, jsonify
 
 import pymongo
+import logging
 from flask_pymongo import PyMongo
+from jaeger_client import Config
+from opentracing.ext import tags
+from opentracing.propagation import Format
 
 app = Flask(__name__)
 
@@ -12,14 +16,37 @@ app.config[
 
 mongo = PyMongo(app)
 
+def init_tracer(service):
+    logging.getLogger('').handlers = []
+    logging.basicConfig(format='%(message)s', level=logging.DEBUG)
+    config = Config(
+        config={
+            'sampler': {
+                'type': 'const',
+                'param': 1,
+            },
+            'logging': True,
+        },
+        service_name=service,
+    )
+    # this call also sets opentracing.tracer
+    return config.initialize_tracer()
+tracer = init_tracer('backend-udacity-service')
+
 
 @app.route("/")
 def homepage():
+    with tracer.start_span('HomePage') as span:
+        span.set_tag('http.method;', 'GET')
+        span.set_tag('endpoint;', '/')
     return "Hello World"
 
 
 @app.route("/api")
 def my_api():
+    with tracer.start_span('HomePage') as span:
+        span.set_tag('http.method;', 'GET')
+        span.set_tag('endpoint;', '/api')
     answer = "something"
     return jsonify(repsonse=answer)
 
